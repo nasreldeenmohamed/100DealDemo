@@ -1,8 +1,11 @@
 <resources>
-    <string name="app_name">DealDemo</string>
+    <string name="app_name">100 Deal</string>
 
     <string name="facebook_app_id">1857597007686195</string>
     <string name="fb_login_protocol_scheme">fb1857597007686195</string>
+    <string name="title_activity_registeration">Registeration</string>
+
+    <string name="google_sign_in_client_id">276675530672-i9eo5g2cnad34e2u65e911a14h5kv4jt.apps.googleusercontent.com</string>
 
 
 </resources>

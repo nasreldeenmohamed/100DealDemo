@@ -12,9 +12,9 @@ public class LoginResponse {
     @SerializedName("result")
     @Expose
     private String result;
-    @SerializedName("userID")
+    @SerializedName("user_id")
     @Expose
-    private Integer userID;
+    private String userID;
 
     public String getResult() {
         return result;
@@ -24,11 +24,11 @@ public class LoginResponse {
         this.result = result;
     }
 
-    public Integer getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(Integer userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 }

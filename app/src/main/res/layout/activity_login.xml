@@ -6,7 +6,12 @@
 
         <variable
             name="loginViewModel"
-            type="app.deal.com.dealdemo.login.LoginViewModel_DB" />
+            type="app.deal.com.dealdemo.login.LoginViewModel" />
+
+
+        <variable
+            name="loginRequest"
+            type="app.deal.com.dealdemo.model.remote.requests.LoginRequest" />
     </data>
 
 
@@ -19,29 +24,47 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="8dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
+
+            <ImageView
                 android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal|top"
+                android:gravity="center_horizontal|top"
+                android:src="@drawable/icon2"
+                android:textColor="@color/colorAccent"
+                android:textSize="45sp"
+                android:typeface="sans" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                app:error="@{loginViewModel.errorEmail}"
+                android:layout_gravity="center_horizontal"
                 app:errorEnabled="true">
 
                 <EditText
                     android:id="@+id/inEmail"
-                    android:layout_width="match_parent"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:hint="Email"
                     android:inputType="textEmailAddress"
                     android:padding="8dp"
-                    android:text="@={loginViewModel.email}" />
+                    android:text="@={loginRequest.name}" />
 
             </android.support.design.widget.TextInputLayout>
 
+            <!--app:error="@{loginRequest.emailError}"-->
+
+            <!--android:text="@={loginViewModel.password}"
+                app:error="@{loginViewModel.errorEmail}"
+            app:error="@{loginViewModel.errorEmail}"-->
+
             <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                app:error="@{loginViewModel.errorPassword}"
+                android:layout_marginTop="12dp"
                 app:errorEnabled="true">
 
                 <EditText
@@ -51,39 +74,69 @@
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:padding="8dp"
-                    android:text="@={loginViewModel.password}" />
+                    android:text="@={loginRequest.password}"
+                    app:error="@{loginRequest.error}" />
 
             </android.support.design.widget.TextInputLayout>
-
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="250dp"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
-                android:onClick="@{()-> loginViewModel.onLoginClicked()}"
-                android:text="LOGIN" />
+                android:background="@color/colorPrimary"
+                android:onClick="@{() -> loginViewModel.onLoginClicked()}"
+                android:text="LOGIN"
+                android:textColor="#ffffff" />
+
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button"
-                android:layout_width="300dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleLarge"
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:visibility="@{loginViewModel.busy}" />
+                android:layout_marginTop="12dp"
+                android:text="Don't have an account?" />
 
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@android:color/transparent"
+                android:text="Register"
+                android:textColor="@color/colorPrimary" />
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
         </LinearLayout>
 
     </ScrollView>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="registerViewModel"
+            type="app.deal.com.dealdemo.register.RegisterViewModel" />
+    </data>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal|top"
+                android:gravity="center_horizontal|top"
+                android:src="@drawable/icon2"
+                android:textColor="@color/colorAccent"
+                android:textSize="45sp"
+                android:typeface="sans" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true">
+
+                <EditText
+                    android:id="@+id/regName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:afterTextChanged="@{(editable)->registerViewModel.afterNameTextChanged(editable)}"
+                    android:hint="Name"
+                    android:inputType="text"
+                    android:padding="8dp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true">
+
+                <EditText
+                    android:id="@+id/regEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:afterTextChanged="@{(editable)->registerViewModel.afterEmailTextChanged(editable)}"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:padding="8dp"
+                    app:error="@{registerViewModel.errorEmail}"
+                    app:errorEnabled="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true">
+
+                <EditText
+                    android:id="@+id/regPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:afterTextChanged="@{(editable)->registerViewModel.afterPasswordTextChanged(editable)}"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    app:errorEnabled="true" />
+
+                <!--app:error="@{registerViewModel.errorPassword}"-->
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/regButton"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimary"
+                android:text="Register"
+                android:textColor="#fff" />
+
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>
