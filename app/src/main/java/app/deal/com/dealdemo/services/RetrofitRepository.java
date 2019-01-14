@@ -17,7 +17,6 @@ import app.deal.com.dealdemo.model.remote.requests.NotificationTokenRequest;
 import app.deal.com.dealdemo.model.remote.requests.RegisterRequest;
 import app.deal.com.dealdemo.model.remote.responses.LoginResponse;
 import app.deal.com.dealdemo.model.remote.responses.RegisterResponse;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,9 +26,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitRepository {
     String HTTPS_API_Deal_Demo_URL = "https://www.100deal.net";
 
+// okHttpClient.setHostnameVerifier(new
+//
+//    HostnameVerifier() {
+//        @Override public boolean verify (String hostname, SSLSession session){
+//            return true;
+//        }
+//    });
+
+
     private APIRequest APIRequest;
     private static RetrofitRepository retrofitRepository;
-    OkHttpClient okHttpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient();
 
     private RetrofitRepository() {
 
@@ -39,7 +46,6 @@ public class RetrofitRepository {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(HTTPS_API_Deal_Demo_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(okHttpClient)
                 .build();
 
         APIRequest = retrofit.create(APIRequest.class);
@@ -58,12 +64,13 @@ public class RetrofitRepository {
         final MutableLiveData<RegisterResponse> data = new MutableLiveData<>();
 
         APIRequest.performRegister(registerRequest.getName(), registerRequest.getPassword(),
-                registerRequest.getSignup(), registerRequest.getEmail()).enqueue(new Callback<RegisterResponse>() {
+                registerRequest.getSignup(), registerRequest.getMail()).enqueue(new Callback<RegisterResponse>() {
             @Override
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 //        simulateDelay();
                 if (response.isSuccessful()) {
                     data.setValue(response.body());
+
                     Log.d("regiterrequest", " response = " + response.body().getResult());
                 }
             }
@@ -89,24 +96,18 @@ public class RetrofitRepository {
 
 
         APIRequest.doLogin(loginRequest.getName(), loginRequest.getPassword(), loginRequest.getLogin(),
-                loginRequest.getMobile_token()).enqueue(new Callback<String>() {
+                loginRequest.getMobile_token()).enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.d("login", " response = " + response.isSuccessful());
-                Log.d("login", " response = " + response.body());
-                Log.d("login", " response = " + response.message());
-                Log.d("login", " response = " + response.errorBody());
-                Log.d("login", " response = " + response.raw());
-                Log.d("login", " response = " + response.code());
-
-
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                Log.d("loginrequest", " response = " + response.isSuccessful());
+                Log.d("loginrequest", " response = " + response.body());
                 simulateDelay();
-                // data.postValue(response.body());
+                data.postValue(response.body());
 
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
 
                 Log.d("login failure", " = " + call.request().url());
                 Log.d("login failure", " = " + t.getLocalizedMessage());
@@ -122,9 +123,7 @@ public class RetrofitRepository {
         final String[] result = {""};
         // APIRequest.updateDeviceToken(notificationTokenRequest).enqueue(new Call<String>());
 
-        APIRequest.updateDeviceToken(notificationTokenRequest.getAndroidui(),
-                notificationTokenRequest.getUpdate_android_token(), notificationTokenRequest.getToken())
-                .enqueue(new Callback<String>() {
+        APIRequest.updateDeviceToken(notificationTokenRequest.getAndroidui(), notificationTokenRequest.getUpdate_android_token(), notificationTokenRequest.getToken()).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.code() == 200 && response.isSuccessful()) {

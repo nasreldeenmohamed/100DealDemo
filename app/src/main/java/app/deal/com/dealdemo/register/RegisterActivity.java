@@ -9,6 +9,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity implements LifecycleOwne
     @Inject
     RegisterViewModel.Factory factory;
     private String errorMessage = "Something went wrong please try again.";
-    private String successMessage = "Registration done successful";
+    private String successMessage = "RegisterActivity done successful";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity implements LifecycleOwne
     }
 
     private void initViewModel() {
-        factory = new RegisterViewModel.Factory(getApplication());
+        factory = new RegisterViewModel.Factory(getApplication(), RegisterActivity.this);
         viewModel = ViewModelProviders.of(this, factory).get(RegisterViewModel.class);
         binding.setRegisterViewModel(viewModel);
     }
@@ -58,6 +59,8 @@ public class RegisterActivity extends AppCompatActivity implements LifecycleOwne
                 @Override
                 public void onChanged(@Nullable RegisterResponse registerResponse) {
                     binding.progressBar.setVisibility(View.GONE);
+
+                //    Log.e("registerResponse", registerResponse.getResult().getUid());
 
                     if (registerResponse != null) {
                         viewModel.saveUserSignedUp(registerResponse.getResult().getUid() + "");

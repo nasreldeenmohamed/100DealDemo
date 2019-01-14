@@ -16,24 +16,13 @@ import retrofit2.http.POST;
 public interface APIRequest {
     //@Headers("Content-Type:text/html; charset=UTF-8")
     //@Headers({"Accept: application/json"})
-
-/*
-    @FormUrlEncoded
-    @POST("/?q=andriodapi")
-    Call<LoginResponse> doLogin(@Field("name") String name, @Field("password") String password,
-                                @Field("login") String login, @Field("mobile_token") String mobile_token);
-*/
-
-
     @Headers({
             "Accept: application/x-www-form-urlencoded;",
     })
     @FormUrlEncoded
     @POST("/?q=andriodapi")
-    Call<String> doLogin(@Field("name") String name, @Field("password") String password,
-                         @Field("login") String login, @Field("mobile_token") String mobile_token);
-
-
+    Call<LoginResponse> doLogin(@Field("name") String name, @Field("password") String password,
+                                @Field("login") String login, @Field("mobile_token") String mobile_token);
 
     @FormUrlEncoded
     @POST("/?q=andriodapi")

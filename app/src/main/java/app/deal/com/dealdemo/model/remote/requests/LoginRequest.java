@@ -83,7 +83,7 @@ public class LoginRequest extends BaseObservable {
             return "Please Enter username or email";
 
         if (!Patterns.EMAIL_ADDRESS.matcher(name).matches())
-            return "Please,Eneter a valid Email";
+            return "Please, Eneter a valid Email";
 
         return null;
 

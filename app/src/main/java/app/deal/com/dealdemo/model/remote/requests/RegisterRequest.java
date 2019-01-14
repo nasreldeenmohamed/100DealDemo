@@ -6,11 +6,11 @@ package app.deal.com.dealdemo.model.remote.requests;
 
 public class RegisterRequest {
 
-    String name ;
-    String email ;
-    String password;
-    String signup;
-    String mobile_token;
+    private String name;
+    private String mail;
+    private String password;
+    private String signup;
+    private String mobile_token;
 
     public String getName() {
         return name;
@@ -44,11 +44,11 @@ public class RegisterRequest {
         this.mobile_token = mobile_token;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMail() {
+        return mail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMail(String email) {
+        this.mail = email;
     }
 }

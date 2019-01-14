@@ -2,7 +2,6 @@ package app.deal.com.dealdemo.login;
 
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -13,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -21,14 +21,18 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
@@ -38,10 +42,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 
+
 import app.deal.com.dealdemo.R;
 import app.deal.com.dealdemo.databinding.ActivityLoginBinding;
 import app.deal.com.dealdemo.model.remote.requests.LoginRequest;
-import app.deal.com.dealdemo.model.remote.responses.LoginResponse;
 import app.deal.com.dealdemo.register.RegisterActivity;
 import app.deal.com.dealdemo.utils.SharedPref;
 
@@ -69,9 +73,13 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
     String UID = "", ProfilePhotoURL = "", Email = "", FName = "", LName = "";
     CallbackManager callbackManager;
     LoginButton loginButton;
-    ProgressDialog progressDialog;
 
     public static Context loginContext;
+
+    Observer<String> ErrorMessageLiveData;
+
+    Button login_btn;
+    public static ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
         sharedPref = new SharedPref(this);
 
         loginContext = LoginActivity.this;
-        init();
+
         activityLoginBinding.btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,31 +101,23 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
         });
 
 
-        activityLoginBinding.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                final LiveData<LoginResponse> loginResponseLiveData = viewModel.onLoginClicked();
-                if (loginResponseLiveData != null) {
-                    activityLoginBinding.progressBar.setVisibility(View.VISIBLE);
-                    loginResponseLiveData.observe(LoginActivity.this, new Observer<LoginResponse>() {
-                        @Override
-                        public void onChanged(@Nullable LoginResponse loginResponse) {
-
-                            activityLoginBinding.progressBar.setVisibility(View.GONE);
-
-                            viewModel.loggedinSuccessfully(loginResponse);
-                        }
-                    });
-                }
-            }
-        });
-
+        init();
 
         registerFacebookLogin();
         registerGoogleSignIn();
     }
+
+//    public void onLoginClicked() {
+//        Log.i("mainActivity", "onLoginClicked");
+//        if (loginRequest.getName().equals(""))
+//            activityLoginBinding.inEmail.setError("Name is Empty!");
+//       else if (loginRequest.getPassword().equals(""))
+//            activityLoginBinding.inEmail.setError("Password is Empty!");
+//       else if (loginRequest.getPassword().length() < 6)
+//           activityLoginBinding.inPassword.setError("too short!");
+//       else
+//           viewModel.onLoginClicked();
+//    }
 
     /******************  ---  Google Sign In --- ********************/
     private void registerGoogleSignIn() {
@@ -127,17 +127,19 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
         // Configure sign-in to request the user's ID, email address, and basic
 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.google_sign_in_client_id))
                 .requestEmail()
                 .build();
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-//        account = GoogleSignIn.getLastSignedInAccount(this);
-//        if (account != null) {
-////            updateUI(account);
-//            gotoMainActivity(account);
-//        }
+        if (sharedPref.getString("userID").equals("")) {
+            account = GoogleSignIn.getLastSignedInAccount(this);
+            if (account != null) {
+                mGoogleSignInClient.signOut();
+            }
+        }
 
 
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +149,7 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
             }
         });
     }
+
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -158,12 +161,14 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             // Signed in successfully, show authenticated UI.
-            callLoginAPI(account.getEmail(), account.getId(), sharedPref.getString("deviceToken"));
+            String name = account.getEmail().split("@")[0];
+            callLoginAPI(name, account.getId(), sharedPref.getString("deviceToken"));
 
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            Log.w(TAG, "signInResult:failed code=" + e.getMessage());
 //            updateUI(null);
             Toast.makeText(this, "Login failed, please try again..", Toast.LENGTH_SHORT).show();
         }
@@ -178,6 +183,9 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
         callbackManager = CallbackManager.Factory.create();
         loginButton = findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("email"));
+
+        facebookPost();
+
         // Callback registration
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -209,10 +217,14 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
             @Override
             public void onCancel() {
                 // App code
+                Toast.makeText(LoginActivity.this, "facebook canceled",
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
+                Toast.makeText(LoginActivity.this, "facebook error: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
 
             }
 
@@ -256,7 +268,25 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
         }
     }
 
+    private void facebookPost() {
+        //check login
+        if (sharedPref.getString("userID").equals("")) {
+            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            if (accessToken == null) {
+                Log.d(TAG, ">>>" + "Signed Out");
+            } else {
+                Log.d(TAG, ">>>" + "Signed In");
+                LoginManager.getInstance().logOut();
+            }
+        }
+    }
+
     private void callLoginAPI(String Email, String Password, String DeviceToken) {
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setTitle("Login");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
+
         loginRequest.setLogin("android");
         loginRequest.setMobile_token(DeviceToken);
         loginRequest.setName(Email);
@@ -282,11 +312,32 @@ public class LoginActivity extends AppCompatActivity implements LifecycleOwner {
         LoginViewModel.Factory factory = new LoginViewModel.Factory(this.getApplication(), loginRequest,
                 LoginActivity.this);
 
-        viewModel =
-                ViewModelProviders.of(this, factory).get(LoginViewModel.class);
+        viewModel = ViewModelProviders.of(this, factory).get(LoginViewModel.class);
         activityLoginBinding.setLoginRequest(loginRequest);
-        activityLoginBinding.setLoginViewModel(viewModel);
-        //activityLoginBinding.setLifecycleOwner(this);
+//        activityLoginBinding.setLoginViewModel(viewModel);
+
+        ErrorMessageLiveData = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                if (s.equals("emptyEmail"))
+                    activityLoginBinding.inEmail.setError("Name is Empty!");
+                else if (s.equals("emptyEmail"))
+                    activityLoginBinding.inEmail.setError("Password is Empty!");
+            }
+        };
+
+        login_btn = findViewById(R.id.button);
+        login_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog = new ProgressDialog(LoginActivity.this);
+                progressDialog.setTitle("Login");
+                progressDialog.setMessage("Please wait...");
+                progressDialog.show();
+
+                viewModel.onLoginClicked();
+            }
+        });
     }
 
 

@@ -5,7 +5,16 @@
     <string name="fb_login_protocol_scheme">fb1857597007686195</string>
     <string name="title_activity_registeration">Registeration</string>
 
-    <string name="google_sign_in_client_id">276675530672-i9eo5g2cnad34e2u65e911a14h5kv4jt.apps.googleusercontent.com</string>
+    <!--debug-->
+    <!--<string name="google_sign_in_client_id">276675530672-i9eo5g2cnad34e2u65e911a14h5kv4jt.apps.googleusercontent.com</string>-->
+    <!--release-->
+    <!--<string name="google_sign_in_client_id">276675530672-5b32vvp9ch1gdmpntjs9mpd2diomvhoo.apps.googleusercontent.com</string>-->
+    <!--signing google play console-->
+    <!--<string name="google_sign_in_client_id">276675530672-8nhk5cgf724t7517q3o7jnl3oo7q5gsj.apps.googleusercontent.com</string>-->
+
+    <!--firebase-->
+    <string name="google_sign_in_client_id">276675530672-qufkd37e0o77ds38r9u9tiohtie7aai4.apps.googleusercontent.com</string>
+    <string name="sign_in">Sign In</string>
 
 
 </resources>

@@ -35,6 +35,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
         <!-- ***********************************Facebook SDK************************************* -->
 
         <service android:name=".notifications.NotificationService">
@@ -48,7 +49,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".splash.SplashActivity"
+        <activity
+            android:name=".splash.SplashActivity"
             android:theme="@style/AppTheme.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,14 +58,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".main.MainActivity" />
-        <activity
-            android:name=".login.LoginActivity"/>
+        <activity android:name=".main.MainActivity" />
+        <activity android:name=".login.LoginActivity"
+            android:label="@string/sign_in"/>
         <activity
             android:name=".register.RegisterActivity"
-            android:label="@string/title_activity_registeration"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="@string/title_activity_registeration" />
     </application>
 
 </manifest>

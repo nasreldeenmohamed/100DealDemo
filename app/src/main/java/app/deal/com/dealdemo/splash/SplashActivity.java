@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -30,11 +32,13 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        /*FirebaseApp.initializeApp(SplashActivity.this);
-        String DeviceToken = FirebaseInstanceId.getInstance().getToken();
-*/
+        FirebaseApp.initializeApp(SplashActivity.this);
+
+//        FacebookSdk.sdkInitialize(getApplicationContext());
+//        AppEventsLogger.activateApp(this);
+
         sharedPref = new SharedPref(this);
-//        printKeyHash();
+        printKeyHash();
 
         checkDeviceToken();
 
@@ -54,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkDeviceToken() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        sharedPref.getString("deviceToken");//, refreshedToken);
+        sharedPref.setString("deviceToken", refreshedToken);
 //        Log.e("refreshedToken", refreshedToken);
 //        if (!sharedPref.getString("token").equals(refreshedToken))
 //        if (refreshedToken != null)

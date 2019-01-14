@@ -48,7 +48,7 @@
                     android:id="@+id/inEmail"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
+                    android:hint="Username"
                     android:inputType="textEmailAddress"
                     android:padding="8dp"
                     android:text="@={loginRequest.name}" />
@@ -86,9 +86,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:background="@color/colorPrimary"
-                android:onClick="@{() -> loginViewModel.onLoginClicked()}"
-                android:text="LOGIN"
+                android:text="Sign In"
                 android:textColor="#ffffff" />
+
+
+            <!--android:onClick="@{() -> loginViewModel.onLoginClicked()}"-->
 
 
             <com.facebook.login.widget.LoginButton
@@ -97,8 +99,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:paddingBottom="12dp"
-                android:paddingTop="12dp" />
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp" />
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/sign_in_button"
@@ -117,26 +119,13 @@
             <Button
                 android:id="@+id/btnRegister"
                 android:layout_width="wrap_content"
+                android:textColor="@color/colorPrimary"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@android:color/transparent"
-                android:text="Register"
-                android:textColor="@color/colorPrimary" />
+                android:text="Register" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone" />
-
-            </FrameLayout>
         </LinearLayout>
 
     </ScrollView>
